@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node server/index.js",
     "init-db": "node server/db/init.js",
-    "start": "node server/db/init.js && node server/index.js"
+    "start": "node server/db/init.js && node server/index.js",
+    "build": "npm install"
   },
   "engines": {
     "node": ">=18"

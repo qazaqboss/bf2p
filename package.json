@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node server/index.js",
     "init-db": "node server/db/init.js",
-    "start": "NODE_ENV=production node server/index.js"
+    "start": "node server/db/init.js && node server/index.js"
   },
   "engines": {
     "node": ">=18"

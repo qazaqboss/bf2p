@@ -12,6 +12,11 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../client')));
 
+// Vercel: также раздаём статику по абсолютному пути от корня проекта
+if (process.env.VERCEL) {
+  app.use(express.static(path.join(process.cwd(), 'client')));
+}
+
 function updateOverdueStatuses() {
   const today = new Date().toISOString().split('T')[0];
   try {
@@ -48,12 +53,20 @@ app.use((err, req, res, next) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/index.html'));
+  const htmlPath = process.env.VERCEL
+    ? path.join(process.cwd(), 'client/index.html')
+    : path.join(__dirname, '../client/index.html');
+  res.sendFile(htmlPath);
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`\n✅ Swiss Factoring Platform запущен`);
-  console.log(`   URL: http://localhost:${PORT}`);
-  console.log(`   Логин: admin@swiss.kz | Пароль: password\n`);
-});
+// Для Vercel — экспортируем app как serverless handler
+if (process.env.VERCEL) {
+  module.exports = app;
+} else {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`\n✅ Swiss Factoring Platform запущен`);
+    console.log(`   URL: http://localhost:${PORT}`);
+    console.log(`   Логин: admin@swiss.kz | Пароль: password\n`);
+  });
+}

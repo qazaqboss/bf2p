@@ -43,7 +43,7 @@ export default {
 
       <div class="card" style="overflow:hidden">
         <div v-if="loading" style="text-align:center;padding:40px"><div class="spinner"></div></div>
-        <table v-else style="width:100%;border-collapse:collapse">
+        <div class="table-wrap"><table v-else style="width:100%;border-collapse:collapse">
           <thead><tr>
             <th class="th">Название</th><th class="th">БИН</th>
             <th class="th">Рейтинг</th><th class="th">Кред. лимит</th>

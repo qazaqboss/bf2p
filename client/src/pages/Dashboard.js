@@ -27,7 +27,7 @@ export default {
 
       <template v-else-if="data">
         <!-- Метрики -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px" class="metrics-grid">
           <div class="card metric-card">
             <div class="metric-lbl">Активный портфель</div>
             <div class="metric-val" style="font-size:20px">{{fmt(data.portfolio?.total_od, true)}}</div>
@@ -54,7 +54,7 @@ export default {
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="two-col-grid">
           <!-- Ближайшие гашения -->
           <div class="card" style="padding:20px">
             <h3 style="font-size:15px;font-weight:700;margin-bottom:16px;color:#111827">Ближайшие гашения</h3>

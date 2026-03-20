@@ -76,8 +76,8 @@ const App = {
     const user = ref(null);
     const page = ref('dashboard');
     const pageParam = ref(null);
+    const sidebarOpen = ref(false);
 
-    // Check token on load
     const token = localStorage.getItem('sf_token');
     if (token) {
       api.me().then(u => { user.value = u; }).catch(() => localStorage.removeItem('sf_token'));
@@ -86,6 +86,7 @@ const App = {
     const navigate = (p, param = null) => {
       page.value = p;
       pageParam.value = param;
+      sidebarOpen.value = false;
       window.scrollTo(0, 0);
     };
 
@@ -93,28 +94,44 @@ const App = {
       localStorage.removeItem('sf_token');
       user.value = null;
       page.value = 'dashboard';
+      sidebarOpen.value = false;
     };
 
-    return { user, page, pageParam, navigate, logout };
+    return { user, page, pageParam, sidebarOpen, navigate, logout };
   },
   template: `
     <login-page v-if="!user" @logged-in="user=$event; page='dashboard'" />
 
-    <div v-else style="display:flex;min-height:100vh">
-      <sidebar :page="page" :user="user" @navigate="navigate" @logout="logout" />
+    <div v-else style="min-height:100vh;background:#f8fafc">
 
-      <main style="flex:1;overflow-y:auto;padding:28px;max-width:100%;background:#f8fafc">
-        <dashboard         v-if="page==='dashboard'"         @navigate="navigate" />
-        <svod              v-else-if="page==='svod'"         @navigate="navigate" />
-        <financings        v-else-if="page==='financings'"   @navigate="navigate" />
-        <new-financing     v-else-if="page==='new-financing'" @navigate="navigate" />
-        <financing-detail  v-else-if="page==='financing-detail'" :id="pageParam" @navigate="navigate" />
-        <clients           v-else-if="page==='clients'"      @navigate="navigate" />
-        <debtors           v-else-if="page==='debtors'"      @navigate="navigate" />
-        <tariff-plans      v-else-if="page==='tariffs'"      @navigate="navigate" />
-        <analytics         v-else-if="page==='analytics'"    @navigate="navigate" />
-        <payments          v-else-if="page==='payments'"     @navigate="navigate" />
-      </main>
+      <!-- Мобильный топбар -->
+      <div style="display:none;position:sticky;top:0;z-index:30;background:#0f172a;padding:12px 16px;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,.2)" class="mobile-topbar">
+        <button class="hamburger" @click="sidebarOpen=true">☰</button>
+        <span style="color:#fff;font-size:15px;font-weight:700">Swiss Factoring</span>
+      </div>
+
+      <div style="display:flex;min-height:100vh">
+        <sidebar
+          :page="page" :user="user" :open="sidebarOpen"
+          @navigate="navigate" @logout="logout" @close="sidebarOpen=false"
+        />
+
+        <!-- Отступ под десктопный сайдбар -->
+        <div style="width:240px;flex-shrink:0" class="sidebar-spacer"></div>
+
+        <main style="flex:1;overflow-y:auto;padding:24px 20px;min-width:0;max-width:100%">
+          <dashboard         v-if="page==='dashboard'"         @navigate="navigate" />
+          <svod              v-else-if="page==='svod'"         @navigate="navigate" />
+          <financings        v-else-if="page==='financings'"   @navigate="navigate" />
+          <new-financing     v-else-if="page==='new-financing'" @navigate="navigate" />
+          <financing-detail  v-else-if="page==='financing-detail'" :id="pageParam" @navigate="navigate" />
+          <clients           v-else-if="page==='clients'"      @navigate="navigate" />
+          <debtors           v-else-if="page==='debtors'"      @navigate="navigate" />
+          <tariff-plans      v-else-if="page==='tariffs'"      @navigate="navigate" />
+          <analytics         v-else-if="page==='analytics'"    @navigate="navigate" />
+          <payments          v-else-if="page==='payments'"     @navigate="navigate" />
+        </main>
+      </div>
     </div>
   `
 };

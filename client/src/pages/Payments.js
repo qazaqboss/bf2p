@@ -51,7 +51,7 @@ export default {
       <div class="card" style="overflow:hidden">
         <div v-if="loading" style="text-align:center;padding:40px"><div class="spinner"></div></div>
         <div v-else-if="!rows.length" style="text-align:center;padding:40px;color:#6b7280">Нет платёжных поручений</div>
-        <table v-else style="width:100%;border-collapse:collapse">
+        <div class="table-wrap"><table v-else style="width:100%;border-collapse:collapse">
           <thead><tr>
             <th class="th">Дата</th><th class="th">Направление</th>
             <th class="th">Сумма</th><th class="th">Контрагент</th>

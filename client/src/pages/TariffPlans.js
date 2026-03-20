@@ -37,7 +37,7 @@ export default {
       <div v-if="loading" style="text-align:center;padding:40px"><div class="spinner"></div></div>
 
       <div class="card" style="overflow:hidden">
-        <table style="width:100%;border-collapse:collapse">
+        <div class="table-wrap"><table style="width:100%;border-collapse:collapse">
           <thead><tr>
             <th class="th">Название</th>
             <th class="th">Серия</th>

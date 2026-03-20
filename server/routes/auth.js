@@ -1,7 +1,7 @@
 'use strict';
 const router = require('express').Router();
 const db = require('../db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.JWT_SECRET || 'swiss-factoring-secret-2026';

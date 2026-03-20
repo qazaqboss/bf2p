@@ -10,7 +10,7 @@ const seed   = fs.readFileSync(path.join(__dirname, 'seed.sql'),   'utf8');
 function runScript(sql, label) {
   const stmts = sql.split(';').map(s => s.trim()).filter(Boolean);
   for (const stmt of stmts) {
-    try { db.prepare(stmt).run(); } catch (e) {
+    try { db.exec(stmt); } catch (e) {
       if (!e.message.includes('already exists') && !e.message.includes('UNIQUE')) {
         console.error(`[${label}] Error in: ${stmt.slice(0,80)}`);
         console.error(e.message);

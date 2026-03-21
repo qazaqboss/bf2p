@@ -4,8 +4,9 @@ const fs = require('fs');
 const path = require('path');
 const db = require('../db');
 
-const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
-const seed   = fs.readFileSync(path.join(__dirname, 'seed.sql'),   'utf8');
+const schema   = fs.readFileSync(path.join(__dirname, 'schema.sql'),         'utf8');
+const seed     = fs.readFileSync(path.join(__dirname, 'seed.sql'),           'utf8');
+const seedExt  = fs.readFileSync(path.join(__dirname, 'seed_extended.sql'),  'utf8');
 
 function runScript(sql, label) {
   const stmts = sql.split(';').map(s => s.trim()).filter(Boolean);
@@ -19,8 +20,10 @@ function runScript(sql, label) {
   }
 }
 
-runScript(schema, 'schema');
-runScript(seed,   'seed');
+runScript(schema,  'schema');
+runScript(seed,    'seed');
+runScript(seedExt, 'seed_extended');
 
 console.log('✅ База данных инициализирована: data/factoring.db');
+console.log('   Клиентов: 32 | Дебиторов: 57 | Финансирований: 152');
 console.log('   Логин: admin@swiss.kz | Пароль: password');

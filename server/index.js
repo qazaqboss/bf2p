@@ -13,6 +13,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../client')));
 app.use('/investor', express.static(path.join(__dirname, '../client/investor')));
 app.use('/portal',   express.static(path.join(__dirname, '../client/portal')));
+app.use('/site',     express.static(path.join(__dirname, '../client/site')));
 
 function updateOverdueStatuses() {
   const today = new Date().toISOString().split('T')[0];
@@ -62,6 +63,8 @@ app.get('/investor', (req, res) => {
 app.get('/investor/*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/investor/index.html'));
 });
+app.get('/site', (req, res) => res.sendFile(path.join(__dirname, '../client/site/index.html')));
+app.get('/site/*', (req, res) => res.sendFile(path.join(__dirname, '../client/site/index.html')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });

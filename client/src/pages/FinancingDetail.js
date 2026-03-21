@@ -143,7 +143,7 @@ export default {
               <div style="background:#f0fdf4;border-radius:8px;padding:12px">
                 <div class="lbl">K1 начислено (net)</div>
                 <div style="font-size:16px;font-weight:700;color:#15803d">{{fmt(fin.k1_accrued_net)}}</div>
-                <div style="font-size:11px;color:#6b7280">{{fmtPct(fin.tariff_name?.includes ? fin.k1_rate : null)}} годовых</div>
+                <div style="font-size:11px;color:#6b7280">{{fmtPct(fin.k1_rate)}} годовых</div>
               </div>
               <div style="background:#eff6ff;border-radius:8px;padding:12px">
                 <div class="lbl">K2 начислено (net)</div>
@@ -192,6 +192,7 @@ export default {
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
 

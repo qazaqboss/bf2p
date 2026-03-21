@@ -13,7 +13,7 @@ export default {
             <div style="font-size:16px;font-weight:700;color:#fff;letter-spacing:-.02em">Swiss Factoring</div>
             <div style="font-size:12px;color:#64748b;margin-top:2px">Platform v2.0</div>
           </div>
-          <button class="hamburger" @click="$emit('close')" style="display:none" ref="closeBtn">✕</button>
+          <button class="hamburger" @click="$emit('close')">✕</button>
         </div>
 
         <nav style="padding:12px 8px;flex:1">

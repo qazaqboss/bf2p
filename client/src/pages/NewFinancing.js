@@ -4,7 +4,7 @@ import { fmt, fmtDate, today } from '../utils.js';
 export default {
   emits: ['navigate'],
   setup(props, { emit }) {
-    const { ref, computed, onMounted, watch } = Vue;
+    const { ref, computed, onMounted } = Vue;
 
     const clients = ref([]);
     const debtors = ref([]);
@@ -44,13 +44,6 @@ export default {
       ]);
     });
 
-    // Когда выбрали клиента, подтянуть ГД
-    watch(() => form.value.client_id, async (id) => {
-      if (!id) { agreements.value = []; return; }
-      // Simple: find agreements from clients endpoint
-      agreements.value = [];
-      form.value.agreement_id = '';
-    });
 
     const submit = async () => {
       loading.value = true;

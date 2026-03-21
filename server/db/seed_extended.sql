@@ -1,7 +1,19 @@
--- ИНВЕСТОР-ПОЛЬЗОВАТЕЛЬ (пароль: password)
+-- ПОЛЬЗОВАТЕЛИ СИСТЕМЫ (пароль: password)
 INSERT OR IGNORE INTO users(id,email,name,password,role,is_active) VALUES
   ('usr_investor','investor@swiss.kz','Инвестор Swiss Factoring','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','investor',1),
-  ('usr_accountant','accountant@swiss.kz','Бухгалтер','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','accountant',1);
+  ('usr_accountant','accountant@swiss.kz','Бухгалтер','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','accountant',1),
+  ('usr_cl01','granit@swiss.kz','Абдрахманов Санжар (ТОО «Гранат»)','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','client',1),
+  ('usr_cl02','aurora@swiss.kz','Бекова Айгуль (ТОО «Aurora»)','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','client',1),
+  ('usr_cl03','kompinvest@swiss.kz','Сейткали Бауыржан (ТОО «КомпИнвестСтр»)','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','client',1),
+  ('usr_cl07','kontrol@swiss.kz','Нурмаганбетов Асет (ТОО «Контроль-Сервис ЛТД»)','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','client',1),
+  ('usr_cl09','kazmet@swiss.kz','Джаксыбеков Ерлан (ТОО «КазМет»)','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','client',1);
+
+-- Прописать email клиентам для привязки
+UPDATE clients SET email='granit@swiss.kz', phone='+7 701 234-56-01' WHERE id='cl01';
+UPDATE clients SET email='aurora@swiss.kz', phone='+7 701 234-56-02' WHERE id='cl02';
+UPDATE clients SET email='kompinvest@swiss.kz', phone='+7 701 234-56-03' WHERE id='cl03';
+UPDATE clients SET email='kontrol@swiss.kz', phone='+7 701 234-56-07' WHERE id='cl07';
+UPDATE clients SET email='kazmet@swiss.kz', phone='+7 701 234-56-09' WHERE id='cl09';
 
 -- КЛИЕНТЫ
 INSERT OR IGNORE INTO clients(id,name,bin,status,manager) VALUES

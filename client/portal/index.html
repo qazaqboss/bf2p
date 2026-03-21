@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Factoring — Кабинет клиента</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    [v-cloak]{display:none}
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f6ff;margin:0}
+
+    /* Sidebar */
+    .cl-sidebar{width:270px;min-width:270px;background:#fff;
+      display:flex;flex-direction:column;height:100vh;position:fixed;top:0;left:0;z-index:50;
+      overflow-y:auto;transition:transform .25s ease;
+      border-right:1px solid #e2e8f0;box-shadow:2px 0 20px rgba(0,0,0,.06)}
+    .cl-logo-bar{padding:24px 24px 16px;border-bottom:1px solid #f1f5f9}
+    .cl-nav-link{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:12px;
+      font-size:14px;color:#64748b;cursor:pointer;transition:all .15s;font-weight:500;margin:2px 12px}
+    .cl-nav-link:hover{background:#f0f6ff;color:#2563eb}
+    .cl-nav-link.active{background:linear-gradient(135deg,#eff6ff,#dbeafe);color:#2563eb;font-weight:700}
+    .cl-nav-link .ni{width:20px;height:20px;flex-shrink:0;text-align:center;font-size:16px}
+    .cl-nav-section{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#cbd5e1;padding:16px 28px 6px}
+
+    /* Cards */
+    .cl-card{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);border:1px solid #e9f0f8}
+    .cl-metric{padding:24px;position:relative;overflow:hidden}
+    .cl-metric::before{content:'';position:absolute;top:-24px;right:-24px;width:90px;height:90px;border-radius:50%;background:currentColor;opacity:.06}
+
+    /* KPI */
+    .kpi-val{font-size:28px;font-weight:800;color:#0f172a;line-height:1.1;margin-top:6px}
+    .kpi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#94a3b8}
+    .kpi-sub{font-size:12px;color:#94a3b8;margin-top:4px}
+    .kpi-badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-top:10px}
+
+    /* Table */
+    .cl-th{padding:10px 16px;font-size:11px;font-weight:700;color:#64748b;background:#f8fafc;
+      text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;border-bottom:1px solid #e9f0f8}
+    .cl-td{padding:12px 16px;font-size:14px;color:#334155;border-bottom:1px solid #f1f5f9}
+    tr:hover .cl-td{background:#f8fbff}
+
+    /* Tags */
+    .tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+    .tag-green{background:#dcfce7;color:#15803d}
+    .tag-red{background:#fee2e2;color:#dc2626}
+    .tag-blue{background:#dbeafe;color:#1d4ed8}
+    .tag-amber{background:#fef3c7;color:#b45309}
+    .tag-gray{background:#f1f5f9;color:#64748b}
+    .tag-violet{background:#ede9fe;color:#7c3aed}
+
+    /* Form */
+    .cl-label{display:block;font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+    .cl-input{width:100%;padding:11px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;outline:none;transition:border .15s;background:#fff;color:#0f172a}
+    .cl-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+    .cl-select{width:100%;padding:11px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;outline:none;background:#fff;cursor:pointer;color:#0f172a}
+    .cl-btn{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+    .cl-btn-primary{background:linear-gradient(135deg,#1d4ed8,#2563eb);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.3)}
+    .cl-btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+    .cl-btn-secondary{background:#f1f5f9;color:#64748b}
+
+    /* Progress bar */
+    .prog-bar{height:6px;border-radius:3px;background:#e2e8f0;overflow:hidden}
+    .prog-fill{height:100%;border-radius:3px;transition:width .4s}
+
+    /* Alert */
+    .cl-alert{padding:14px 18px;border-radius:10px;font-size:14px;margin-bottom:16px;border-left:4px solid}
+    .cl-alert-info{background:#eff6ff;border-color:#2563eb;color:#1e40af}
+    .cl-alert-warn{background:#fef3c7;border-color:#f59e0b;color:#92400e}
+    .cl-alert-success{background:#f0fdf4;border-color:#22c55e;color:#15803d}
+    .cl-alert-error{background:#fef2f2;border-color:#ef4444;color:#991b1b}
+
+    /* Spinner */
+    .spinner{width:32px;height:32px;border:3px solid #dbeafe;border-top-color:#2563eb;
+      border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:#f8fafc}
+    ::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:3px}
+
+    /* Mobile */
+    .mob-topbar{display:none;position:sticky;top:0;z-index:30;background:#fff;
+      padding:14px 16px;align-items:center;gap:12px;box-shadow:0 2px 12px rgba(0,0,0,.07);border-bottom:1px solid #e9f0f8}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:40}
+
+    @media(max-width:768px){
+      .cl-sidebar{transform:translateX(-100%)}
+      .cl-sidebar.is-open{transform:translateX(0)}
+      .sidebar-overlay.open{display:block}
+      .sidebar-spacer{display:none!important}
+      .mob-topbar{display:flex!important}
+      main{padding:16px!important}
+      .kpi-val{font-size:22px}
+      .grid-4{grid-template-columns:1fr 1fr!important}
+      .grid-2{grid-template-columns:1fr!important}
+    }
+  </style>
+</head>
+<body>
+<div id="cl-app" v-cloak></div>
+<script type="module" src="/portal/src/main.js"></script>
+</body>
+</html>

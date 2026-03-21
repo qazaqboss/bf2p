@@ -12,6 +12,7 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../client')));
 app.use('/investor', express.static(path.join(__dirname, '../client/investor')));
+app.use('/portal',   express.static(path.join(__dirname, '../client/portal')));
 
 function updateOverdueStatuses() {
   const today = new Date().toISOString().split('T')[0];
@@ -42,12 +43,19 @@ app.use('/api/clients',      require('./routes/clients'));
 app.use('/api/debtors',      require('./routes/debtors'));
 app.use('/api/tariff-plans', require('./routes/tariffs'));
 app.use('/api/analytics',    require('./routes/analytics'));
+app.use('/api/portal',       require('./routes/portal'));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message || 'Внутренняя ошибка сервера' });
 });
 
+app.get('/portal', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/portal/index.html'));
+});
+app.get('/portal/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/portal/index.html'));
+});
 app.get('/investor', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/investor/index.html'));
 });

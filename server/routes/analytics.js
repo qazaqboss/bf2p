@@ -101,6 +101,73 @@ router.get('/aging', auth, (req, res) => {
   res.json({ buckets: result, total_rppu: result.reduce((s, b) => s + b.rppu, 0) });
 });
 
+router.get('/investor', auth, (req, res) => {
+  const portfolio = db.prepare(`
+    SELECT
+      COUNT(*) as total_deals,
+      ROUND(SUM(financing_sum),2) as total_financed,
+      ROUND(SUM(document_sum),2) as total_docs,
+      SUM(CASE WHEN status IN ('open','overdue','default') THEN 1 ELSE 0 END) as active_deals,
+      ROUND(SUM(CASE WHEN status IN ('open','overdue','default') THEN current_od ELSE 0 END),2) as active_od,
+      SUM(CASE WHEN status='closed' THEN 1 ELSE 0 END) as closed_deals,
+      SUM(CASE WHEN status IN ('overdue','default') THEN 1 ELSE 0 END) as overdue_deals,
+      ROUND(SUM(k1_accrued_net),2) as total_k1,
+      ROUND(SUM(k2_accrued_net),2) as total_k2
+    FROM financings WHERE status != 'draft'
+  `).get();
+
+  const byStatus = db.prepare(`
+    SELECT status, COUNT(*) as cnt, ROUND(SUM(current_od),2) as od
+    FROM financings WHERE status != 'draft' GROUP BY status
+  `).all();
+
+  const monthlyNew = db.prepare(`
+    SELECT strftime('%Y-%m', date_financing) as month,
+           COUNT(*) as cnt,
+           ROUND(SUM(financing_sum),2) as volume
+    FROM financings WHERE date_financing IS NOT NULL
+    GROUP BY 1 ORDER BY 1 DESC LIMIT 15
+  `).all().reverse();
+
+  const upcoming = db.prepare(`
+    SELECT f.id, f.current_od, f.planned_repayment, f.days_overdue,
+           c.name as client_name, d.name as debtor_name
+    FROM financings f
+    LEFT JOIN clients c ON f.client_id=c.id
+    LEFT JOIN debtors d ON f.debtor_id=d.id
+    WHERE f.status IN ('open','overdue','default') AND f.planned_repayment IS NOT NULL
+    ORDER BY f.planned_repayment ASC LIMIT 15
+  `).all();
+
+  const vopStats = db.prepare(`
+    SELECT ROUND(SUM(CASE WHEN vop > 0 THEN vop ELSE 0 END),2) as total_vop_positive,
+           ROUND(SUM(CASE WHEN vop < 0 THEN vop ELSE 0 END),2) as total_vop_negative
+    FROM financings WHERE status='closed'
+  `).get();
+
+  res.json({ portfolio, byStatus, monthlyNew, upcoming, vopStats });
+});
+
+router.get('/commissions-summary', auth, (req, res) => {
+  const monthly = db.prepare(`
+    SELECT strftime('%Y-%m', period_date) as month,
+           ROUND(SUM(k1_gross),2) as k1_gross,
+           ROUND(SUM(k2_gross),2) as k2_gross,
+           ROUND(SUM(total_gross),2) as total
+    FROM commission_periods
+    GROUP BY 1 ORDER BY 1 DESC LIMIT 18
+  `).all();
+
+  const totals = db.prepare(`
+    SELECT ROUND(SUM(k1_gross),2) as k1_gross,
+           ROUND(SUM(k2_gross),2) as k2_gross,
+           ROUND(SUM(total_gross),2) as total
+    FROM commission_periods
+  `).get();
+
+  res.json({ monthly: monthly.reverse(), totals });
+});
+
 router.get('/portfolio', auth, (req, res) => {
   const rows = db.prepare(`
     SELECT f.status, f.document_sum, f.financing_sum, f.current_od,

@@ -1,3 +1,8 @@
+-- ИНВЕСТОР-ПОЛЬЗОВАТЕЛЬ (пароль: password)
+INSERT OR IGNORE INTO users(id,email,name,password,role,is_active) VALUES
+  ('usr_investor','investor@swiss.kz','Инвестор Swiss Factoring','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','investor',1),
+  ('usr_accountant','accountant@swiss.kz','Бухгалтер','$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','accountant',1);
+
 -- КЛИЕНТЫ
 INSERT OR IGNORE INTO clients(id,name,bin,status,manager) VALUES
   ('cl01','ТОО «Гранат»','041200045678','active','А.Муратов'),

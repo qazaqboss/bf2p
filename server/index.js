@@ -11,6 +11,7 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname, '../client')));
+app.use('/investor', express.static(path.join(__dirname, '../client/investor')));
 
 function updateOverdueStatuses() {
   const today = new Date().toISOString().split('T')[0];
@@ -47,6 +48,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Внутренняя ошибка сервера' });
 });
 
+app.get('/investor', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/investor/index.html'));
+});
+app.get('/investor/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/investor/index.html'));
+});
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/index.html'));
 });

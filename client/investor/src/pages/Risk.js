@@ -11,10 +11,10 @@ export default {
     const load = async () => {
       try {
         data.value = await api.aging();
+        loading.value = false;
         await nextTick();
         renderChart();
-      } catch (e) { console.error(e); }
-      finally { loading.value = false; }
+      } catch (e) { console.error(e); loading.value = false; }
     };
 
     const renderChart = () => {

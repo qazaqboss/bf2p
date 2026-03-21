@@ -149,23 +149,26 @@ router.get('/investor', auth, (req, res) => {
 });
 
 router.get('/commissions-summary', auth, (req, res) => {
+  // Monthly breakdown by financing date using accrued commissions
+  const vatRate = 0.16;
   const monthly = db.prepare(`
-    SELECT strftime('%Y-%m', period_date) as month,
-           ROUND(SUM(k1_gross),2) as k1_gross,
-           ROUND(SUM(k2_gross),2) as k2_gross,
-           ROUND(SUM(total_gross),2) as total
-    FROM commission_periods
-    GROUP BY 1 ORDER BY 1 DESC LIMIT 18
+    SELECT strftime('%Y-%m', date_financing) as month,
+           ROUND(SUM(k1_accrued_net) * ${1 + vatRate}, 2) as k1_gross,
+           ROUND(SUM(k2_accrued_net) * ${1 + vatRate}, 2) as k2_gross,
+           ROUND(SUM(k1_accrued_net + k2_accrued_net) * ${1 + vatRate}, 2) as total
+    FROM financings
+    WHERE date_financing IS NOT NULL AND status != 'draft'
+    GROUP BY 1 ORDER BY 1 ASC LIMIT 18
   `).all();
 
   const totals = db.prepare(`
-    SELECT ROUND(SUM(k1_gross),2) as k1_gross,
-           ROUND(SUM(k2_gross),2) as k2_gross,
-           ROUND(SUM(total_gross),2) as total
-    FROM commission_periods
+    SELECT ROUND(SUM(k1_accrued_net) * ${1 + vatRate}, 2) as k1_gross,
+           ROUND(SUM(k2_accrued_net) * ${1 + vatRate}, 2) as k2_gross,
+           ROUND(SUM(k1_accrued_net + k2_accrued_net) * ${1 + vatRate}, 2) as total
+    FROM financings WHERE status != 'draft'
   `).get();
 
-  res.json({ monthly: monthly.reverse(), totals });
+  res.json({ monthly, totals });
 });
 
 router.get('/portfolio', auth, (req, res) => {

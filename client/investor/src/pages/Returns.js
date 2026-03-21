@@ -11,10 +11,10 @@ export default {
     const load = async () => {
       try {
         data.value = await api.commissions();
+        loading.value = false;
         await nextTick();
         renderChart();
-      } catch (e) { console.error(e); }
-      finally { loading.value = false; }
+      } catch (e) { console.error(e); loading.value = false; }
     };
 
     const renderChart = () => {
@@ -23,7 +23,7 @@ export default {
       const ctx = document.getElementById('chartMonthlyIncome');
       if (!ctx) return;
       if (chartMonthly) chartMonthly.destroy();
-      const months = [...d.monthly].reverse();
+      const months = d.monthly;
       chartMonthly = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -110,7 +110,7 @@ export default {
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="m in data.monthly" :key="m.month">
+                <tr v-for="m in [...data.monthly].reverse()" :key="m.month">
                   <td class="inv-td" style="font-weight:600">{{fmtMonth(m.month)}}</td>
                   <td class="inv-td" style="text-align:right;color:#2563eb">{{fmt(m.k1_gross, true)}}</td>
                   <td class="inv-td" style="text-align:right;color:#7c3aed">{{fmt(m.k2_gross, true)}}</td>

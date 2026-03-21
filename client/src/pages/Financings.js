@@ -58,7 +58,7 @@ export default {
       <div class="card" style="overflow:hidden">
         <div v-if="loading" style="text-align:center;padding:40px"><div class="spinner"></div></div>
         <div v-else-if="!rows.length" style="text-align:center;padding:40px;color:#6b7280">Ничего не найдено</div>
-        <div class="table-wrap"><table v-else style="width:100%;border-collapse:collapse">
+        <div v-else class="table-wrap"><table style="width:100%;border-collapse:collapse">
           <thead>
             <tr>
               <th class="th">№</th>

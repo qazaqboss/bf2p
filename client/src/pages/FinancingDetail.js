@@ -162,7 +162,7 @@ export default {
               <h3 style="font-size:14px;font-weight:700;color:#111827;text-transform:uppercase;letter-spacing:.03em">История операций</h3>
             </div>
             <div v-if="!ops.length" style="padding:20px;color:#6b7280;font-size:14px">Нет операций</div>
-            <div class="table-wrap"><table v-else style="width:100%;border-collapse:collapse">
+            <div v-else class="table-wrap"><table style="width:100%;border-collapse:collapse">
               <thead>
                 <tr>
                   <th class="th">Дата</th>
